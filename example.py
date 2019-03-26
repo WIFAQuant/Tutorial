@@ -19,7 +19,7 @@ from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
 # 读取本地数据。
-data = pd.read_csv(path + "\\example.csv", index_col=0)
+data = pd.read_csv(path + "\\Data\\example.csv", index_col=0)
 # 重命名列名以
 data.columns = ["Stock Codes", "Month", "Monthly Return"]
 data["Month"] = pd.to_datetime(data["Month"], format='%m/%d/%Y')
@@ -49,12 +49,12 @@ for i in range(len(months_data)):
     
     monthly_performance = monthly_data[monthly_data["Stock Codes"].isin(portfolio)].sort_values(by="Monthly Return")
     monthly_return = monthly_performance["Monthly Return"].mean()
+    report_dataframe.loc[time, "Monthly Return"] = monthly_return
     monthly_return_list.append(monthly_return)
     worst_stock = monthly_performance["Stock Codes"].iloc[0]
-report_dataframe["Monthly Return"] = monthly_return_list
 
 # 参考基准。
-benchmark_data = pd.read_csv("HS300.csv")
+benchmark_data = pd.read_csv(path + "\\Data\\HS300.csv")
 benchmark_data = benchmark_data[benchmark_data["Indexcd"] == 300]
 benchmark_data = benchmark_data[["Month", "Idxrtn"]]
 benchmark_data.columns = ["Month", "Benchmark Return"]
@@ -76,14 +76,14 @@ print("策略%s年的平均净值为：%s；" % (total_year, round(report_datafr
 print("策略%s年的复合年化收益率为：%s" % (total_year, round((report_dataframe["Equity"][-1]**(1/total_year)-1) * 100, 2)), "%；")
 print("策略的夏普值为：%s；" % round(((average_monthly_return+1)**12-1) / report_dataframe["Monthly Return"].std(), 2))
 
-report_dataframe.to_excel("report.xlsx")
+report_dataframe.to_excel(path + "\\Results\\report.xlsx")
 
 plt.figure(figsize=(8, 5))
 plt.plot(report_dataframe.index, report_dataframe["Equity"], label="策略净值")
 plt.plot(report_dataframe.index, report_dataframe["Benchmark Equity"], label="HS300净值")
 plt.legend()
 plt.title("策略与HS300净值对比图")
-plt.savefig(path + "\\equity_plot.png")
+plt.savefig(path + "\\Results\\equity_plot.png")
 
 plt.figure(figsize=(8, 5))
 plt.plot(report_dataframe.index, report_dataframe["Monthly Return"], label="策略月度收益率")
@@ -91,4 +91,4 @@ plt.plot(report_dataframe.index, report_dataframe["Benchmark Return"], label="HS
 plt.plot(report_dataframe.index, report_dataframe["Excess Return"], label="策略超额收益")
 plt.legend()
 plt.title("策略与HS300月度收益率对比图")
-plt.savefig(path + "\\return_plot.png")
+plt.savefig(path + "\\Results\\return_plot.png")
