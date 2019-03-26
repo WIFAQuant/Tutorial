@@ -20,6 +20,7 @@ register_matplotlib_converters()
 
 # 读取本地数据。
 data = pd.read_csv(path + "\\example.csv", index_col=0)
+# 重命名列名以
 data.columns = ["Stock Codes", "Month", "Monthly Return"]
 data["Month"] = pd.to_datetime(data["Month"], format='%m/%d/%Y')
 data = data[data["Month"] > pd.to_datetime("2006", format='%Y')]
